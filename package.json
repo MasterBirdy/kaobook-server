@@ -1,0 +1,27 @@
+{
+    "name": "kaobook",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index",
+        "server": "nodemon index",
+        "client": "npm run serve --prefix client",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "author": "Matthew Ito",
+    "license": "MIT",
+    "dependencies": {
+        "concurrently": "^5.1.0",
+        "cookie-session": "^1.4.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "mongoose": "^5.9.2",
+        "passport": "^0.4.1",
+        "passport-facebook": "^3.0.0",
+        "path": "^0.12.7"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.2"
+    }
+}
