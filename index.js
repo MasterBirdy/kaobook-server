@@ -2,8 +2,9 @@ require("dotenv").config();
 require("./config/passport-setup");
 const express = require("express");
 const authRoutes = require("./routes/auth-routes");
-const profileRoutes = require("./routes/profile.routes");
+const profileRoutes = require("./routes/profile-routes");
 const registerRoutes = require("./routes/register-routes");
+const postRoutes = require("./routes/post-routes");
 const cookieSession = require("cookie-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
@@ -36,6 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/registeruser", registerRoutes);
+app.use("/post", postRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("app listening on port 3000");

@@ -11,7 +11,15 @@ router.get("/", m.authCheck, (req, res) => {
 
 router.get("/:id/timeline", (req, res) => {
     User.findById(req.params.id)
-        .populate("timeline")
+        .populate({
+            path: "timeline",
+            model: "Post",
+            populate: {
+                path: "author",
+                model: "User",
+                select: ["first_name", "last_name", "profile_pic"]
+            }
+        })
         .exec((err, result) => {
             if (err)
                 return res
