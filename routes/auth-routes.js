@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 const { validationResult, check } = require("express-validator");
+const jwt = require("jsonwebtoken");
 
 router.get(
     "/facebook",
@@ -24,7 +26,7 @@ router.get(
     (req, res) => {
         console.log("HIII");
         console.log(req.user);
-        res.redirect("http://localhost:8080/");
+        res.redirect("http://localhost:8080");
     }
 );
 
@@ -49,11 +51,12 @@ router.post("/login", [
             });
         } else {
             User.findOne({ email: req.body.email }, function(err, user) {
+                console.log(user);
                 if (err) {
                     return res
                         .status(400)
                         .json({ success: false, message: "Error", error: err });
-                } else if (results === null) {
+                } else if (user === null) {
                     return res.status(400).json({
                         success: false,
                         message: "Email not found"
@@ -70,11 +73,28 @@ router.post("/login", [
                                     error: err
                                 });
                             } else if (result) {
-                                res.cookie("auth", token);
-                                return res.status(200).json({
-                                    success: true,
-                                    message: "Success!"
-                                });
+                                jwt.sign(
+                                    { ...user },
+                                    process.env.JWT_SECRET,
+                                    { expiresIn: "24h" },
+                                    (err, token) => {
+                                        if (err) {
+                                            return res.status(400).json({
+                                                success: false,
+                                                message: "Error?",
+                                                error: err
+                                            });
+                                        }
+                                        req.user = user;
+                                        console.log("tes");
+                                        console.log(req.user);
+                                        return res.status(200).json({
+                                            success: true,
+                                            message: "Success!",
+                                            token
+                                        });
+                                    }
+                                );
                             } else {
                                 return res.status(400).json({
                                     success: false,
@@ -90,8 +110,9 @@ router.post("/login", [
 ]);
 
 router.get("/logout", (req, res) => {
-    console.log(req.user);
-    console.log("BYYYE");
+    // console.log(req.user);
+    // req.user = null;
+    // console.log(req.user);
     req.logout();
     res.redirect("http://localhost:8080/");
 });

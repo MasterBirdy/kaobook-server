@@ -5,23 +5,21 @@ const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
 const registerRoutes = require("./routes/register-routes");
 const postRoutes = require("./routes/post-routes");
-const cookieSession = require("cookie-session");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const cors = require("cors");
+const session = require("express-session");
 
 const app = express();
 
-app.use(
-    cookieSession({
-        name: "session",
-        maxAge: 24 * 60 * 60 * 1000,
-        keys: [process.env.COOKIE_KEY]
-    })
-);
+app.use(cookieParser(process.env.COOKIE_KEY));
 
 app.use(cors());
 
+app.use(
+    session({ secret: "anything", resave: false, saveUninitialized: true })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 

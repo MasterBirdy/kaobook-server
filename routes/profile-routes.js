@@ -6,6 +6,7 @@ const User = require("../models/User");
 const { validationResult, check } = require("express-validator");
 
 router.get("/", m.authCheck, (req, res) => {
+    console.log(req.user);
     res.status(200).json({ success: true, data: req.user });
 });
 
@@ -14,11 +15,24 @@ router.get("/:id/timeline", (req, res) => {
         .populate({
             path: "timeline",
             model: "Post",
-            populate: {
-                path: "author",
-                model: "User",
-                select: ["first_name", "last_name", "profile_pic"]
-            }
+            populate: [
+                {
+                    path: "author",
+                    model: "User",
+                    select: ["first_name", "last_name", "profile_pic"]
+                },
+                {
+                    path: "comments",
+                    model: "Comment",
+                    populate: [
+                        {
+                            path: "author",
+                            model: "User",
+                            select: ["first_name", "last_name", "profile_pic"]
+                        }
+                    ]
+                }
+            ]
         })
         .exec((err, result) => {
             if (err)
@@ -30,6 +44,7 @@ router.get("/:id/timeline", (req, res) => {
                     .status(400)
                     .json({ success: false, message: "Not found!" });
             } else {
+                console.log(result.timeline);
                 return res.status(200).json({
                     success: true,
                     message: "Success!",
@@ -38,6 +53,8 @@ router.get("/:id/timeline", (req, res) => {
             }
         });
 });
+
+// add a post to a person's timeline
 
 router.post("/:id/post", m.authCheck, [
     check("title")
