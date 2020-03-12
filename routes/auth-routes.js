@@ -26,7 +26,7 @@ router.get(
     (req, res) => {
         console.log("HIII");
         console.log(req.user);
-        res.redirect("http://localhost:8080");
+        res.redirect("http://localhost:8080/redirect");
     }
 );
 

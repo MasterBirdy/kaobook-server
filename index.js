@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
+app.use("/authprofile", profileRoutes);
 app.use("/registeruser", registerRoutes);
 app.use("/post", postRoutes);
 

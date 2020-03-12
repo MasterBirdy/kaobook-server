@@ -48,7 +48,7 @@ router.get("/:id/timeline", (req, res) => {
                 return res.status(200).json({
                     success: true,
                     message: "Success!",
-                    timeline: result.timeline
+                    user: result
                 });
             }
         });

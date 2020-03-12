@@ -31,9 +31,6 @@ passport.use(
             ]
         },
         (accessToken, refreshToken, profile, done) => {
-            console.log("HIII");
-            console.log(profile._json.picture.data);
-            console.log(profile);
             User.findOne({ facebookId: profile.id }).then(currentUser => {
                 if (currentUser) {
                     console.log("here is the current user: ", currentUser);

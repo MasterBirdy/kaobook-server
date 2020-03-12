@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
     authCheck: function(req, res, next) {
-        console.log("the slayer");
         console.log(req.user);
         if (req.user) {
             next();
