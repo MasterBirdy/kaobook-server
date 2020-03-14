@@ -10,7 +10,8 @@ const userSchema = new Schema({
     profile_pic: { type: String },
     birthday: { type: Date },
     gender: { type: String, enum: ["male", "female", "non-binary"] },
-    timeline: [{ type: Schema.Types.ObjectId, ref: "Post" }]
+    timeline: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    friends: [{ type: Schema.Types.ObjectId, ref: "FriendType" }]
 });
 
 userSchema.set("toJSON", { virtuals: true });

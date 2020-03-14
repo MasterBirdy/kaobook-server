@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
 const registerRoutes = require("./routes/register-routes");
 const postRoutes = require("./routes/post-routes");
+const friendRoutes = require("./routes/friend-routes");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
@@ -36,6 +37,7 @@ app.use("/auth", authRoutes);
 app.use("/authprofile", profileRoutes);
 app.use("/registeruser", registerRoutes);
 app.use("/post", postRoutes);
+app.use("/authfriend", friendRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("app listening on port 3000");
