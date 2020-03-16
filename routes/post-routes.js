@@ -26,7 +26,7 @@ router.get("/:id/", (req, res) => {
 });
 
 // like/unlike
-router.post("/:id/", m.authCheck, (req, res) => {
+router.post("/:id/", m.authCheck, m.friendCheck, (req, res) => {
     Post.findById(req.params.id, (err, result) => {
         if (err)
             return res
@@ -38,14 +38,14 @@ router.post("/:id/", m.authCheck, (req, res) => {
                 .json({ success: false, message: "Not found!" });
         } else {
             const isInArray = result.likes.some(like =>
-                like.equals(req.body.id)
+                like.equals(req.body.author)
             );
             if (isInArray) {
                 result.likes = result.likes.filter(
-                    like => !like.equals(req.body.id)
+                    like => !like.equals(req.body.author)
                 );
             } else {
-                result.likes.push(req.body.id);
+                result.likes.push(req.body.author);
             }
             result.save(err => {
                 if (err)
@@ -65,7 +65,7 @@ router.post("/:id/", m.authCheck, (req, res) => {
 
 // add a comment to a user post on a timeline
 
-router.post("/:id/comment", m.authCheck, [
+router.post("/:id/comment", m.authCheck, m.friendCheck, [
     check("text")
         .isLength({ min: 1 })
         .trim()

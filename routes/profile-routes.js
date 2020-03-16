@@ -3,6 +3,7 @@ const router = express.Router();
 const m = require("../middleware/authcheck");
 const Post = require("../models/Post");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const { validationResult, check } = require("express-validator");
 
 router.get("/", m.authCheck, (req, res) => {
@@ -10,7 +11,7 @@ router.get("/", m.authCheck, (req, res) => {
     res.status(200).json({ success: true, data: req.user });
 });
 
-router.get("/:id/timeline", (req, res) => {
+router.get("/:id/timeline", m.authCheck, (req, res) => {
     User.findById(req.params.id)
         .populate({
             path: "timeline",
@@ -44,7 +45,7 @@ router.get("/:id/timeline", (req, res) => {
                     .status(400)
                     .json({ success: false, message: "Not found!" });
             } else {
-                console.log(result.timeline);
+                console.log(result);
                 return res.status(200).json({
                     success: true,
                     message: "Success!",
@@ -56,7 +57,7 @@ router.get("/:id/timeline", (req, res) => {
 
 // add a post to a person's timeline
 
-router.post("/:id/post", m.authCheck, [
+router.post("/:id/post", m.authCheck, m.friendCheck, [
     check("title")
         .isLength({ min: 1 })
         .trim()

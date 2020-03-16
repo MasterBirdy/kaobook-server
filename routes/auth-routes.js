@@ -30,6 +30,50 @@ router.get(
     }
 );
 
+router.get("/getfacebookauth", (req, res) => {
+    if (req.user) {
+        User.findById(req.user._id, (err, user) => {
+            if (err) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Error?",
+                    error: err
+                });
+            } else if (!user) {
+                return res.status(400).json({
+                    success: false,
+                    message: "User not found!"
+                });
+            } else {
+                jwt.sign(
+                    { ...user },
+                    process.env.JWT_SECRET,
+                    { expiresIn: "24h" },
+                    (err, token) => {
+                        if (err) {
+                            return res.status(400).json({
+                                success: false,
+                                message: "Error?",
+                                error: err
+                            });
+                        } else {
+                            return res.status(200).json({
+                                success: true,
+                                message: "Success!",
+                                token
+                            });
+                        }
+                    }
+                );
+            }
+        });
+    } else {
+        return res
+            .status(403)
+            .json({ success: false, message: "No user existing on facebook" });
+    }
+});
+
 router.post("/login", [
     check("email")
         .isLength({ min: 1 })
@@ -51,7 +95,6 @@ router.post("/login", [
             });
         } else {
             User.findOne({ email: req.body.email }, function(err, user) {
-                console.log(user);
                 if (err) {
                     return res
                         .status(400)
@@ -86,8 +129,6 @@ router.post("/login", [
                                             });
                                         }
                                         req.user = user;
-                                        console.log("tes");
-                                        console.log(req.user);
                                         return res.status(200).json({
                                             success: true,
                                             message: "Success!",
@@ -110,9 +151,6 @@ router.post("/login", [
 ]);
 
 router.get("/logout", (req, res) => {
-    // console.log(req.user);
-    // req.user = null;
-    // console.log(req.user);
     req.logout();
     res.redirect("http://localhost:8080/");
 });
