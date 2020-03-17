@@ -7,9 +7,97 @@ const jwt = require("jsonwebtoken");
 const { validationResult, check } = require("express-validator");
 
 router.get("/", m.authCheck, (req, res) => {
-    console.log(req.user);
     res.status(200).json({ success: true, data: req.user });
 });
+
+router.get("/:id/profile", m.authCheck, (req, res) => {
+    User.findById(req.params.id, (err, result) => {
+        if (err)
+            return res
+                .status(400)
+                .json({ success: false, message: "Error", error: err });
+        else if (!result) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Not found!" });
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: "Success!",
+                data: result
+            });
+        }
+    });
+});
+
+router.put("/:id/edit", m.authCheck, [
+    check("firstname")
+        .isLength({ min: 1 })
+        .trim()
+        .withMessage("You must put in your first name")
+        .escape(),
+    check("lastname")
+        .isLength({ min: 1 })
+        .trim()
+        .withMessage("You must put in your last name")
+        .escape(),
+    check("email")
+        .isLength({ min: 3 })
+        .trim()
+        .withMessage("You must put in your email")
+        .escape(),
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                success: false,
+                message: "Error with validation",
+                errors: errors.array()
+            });
+        } else {
+            User.findById(req.params.id, (err, doc) => {
+                if (err) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Error",
+                        error: err
+                    });
+                } else {
+                    if (!doc) {
+                        return res.status(400).json({
+                            success: false,
+                            message: "Not found!",
+                            error: "Error"
+                        });
+                    } else {
+                        doc.first_name = req.body.firstname;
+                        doc.last_name = req.body.lastname;
+                        doc.email = req.body.email;
+                        doc.birthday = new Date(req.body.birthday);
+                        doc.gender = req.body.gender;
+                        doc.profile_pic = req.body.profilePic
+                            ? req.body.profilePic
+                            : "";
+                        doc.save(err => {
+                            if (err) {
+                                return res.status(400).json({
+                                    success: false,
+                                    message: "Error",
+                                    error: err
+                                });
+                            } else {
+                                return res.status(200).json({
+                                    success: true,
+                                    message: "Success!"
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+]);
 
 router.get("/:id/timeline", m.authCheck, (req, res) => {
     User.findById(req.params.id)
@@ -45,7 +133,6 @@ router.get("/:id/timeline", m.authCheck, (req, res) => {
                     .status(400)
                     .json({ success: false, message: "Not found!" });
             } else {
-                console.log(result);
                 return res.status(200).json({
                     success: true,
                     message: "Success!",

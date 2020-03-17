@@ -7,8 +7,6 @@ module.exports = {
             next();
         } else {
             const authHeader = req.headers["authorization"];
-            console.log(req.headers);
-            console.log(authHeader);
             const token = authHeader && authHeader.split(" ")[1];
             if (!token) {
                 //if user is not logged in
@@ -22,7 +20,6 @@ module.exports = {
                             success: false,
                             message: "You are not authorized"
                         });
-                    console.log("the not slayer");
                     req.user = user._doc;
                     next();
                 });
@@ -54,9 +51,6 @@ module.exports = {
                         });
                     } else {
                         const isFound = result.friends.some(friend => {
-                            console.log("the great bird");
-                            console.log(friend.friend);
-                            console.log(req.body.recipient);
                             return (
                                 friend.friend.toString() ===
                                     req.body.recipient.toString() &&

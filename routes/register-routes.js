@@ -28,7 +28,6 @@ router.post("/", [
         .withMessage("You must put in your email")
         .escape(),
     (req, res, next) => {
-        debugger;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({
@@ -65,8 +64,12 @@ router.post("/", [
                                 email: req.body.email,
                                 birthday: new Date(req.body.birthday),
                                 gender: req.body.gender,
-                                password: hashedPassword
+                                password: hashedPassword,
+                                profile_pic: req.body.profilePic
+                                    ? req.body.profilePic
+                                    : ""
                             });
+
                             user.save(err => {
                                 if (err) {
                                     return res.status(400).json({

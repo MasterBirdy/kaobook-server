@@ -24,8 +24,6 @@ router.get(
     "/facebook/redirect",
     passport.authenticate("facebook"),
     (req, res) => {
-        console.log("HIII");
-        console.log(req.user);
         res.redirect("http://localhost:8080/redirect");
     }
 );

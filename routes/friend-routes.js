@@ -255,7 +255,6 @@ router.delete("/:id/cancel", m.authCheck, (req, res) => {
             result.friends = result.friends.filter(friend => {
                 return friend._id.toString() !== req.params.id.toString();
             });
-            console.log(result.friends);
             result.save(err => {
                 if (err)
                     return res
@@ -292,8 +291,6 @@ router.delete("/:id/cancel", m.authCheck, (req, res) => {
                                     } else {
                                         const foundFriendType = resultOtherUser.friends.find(
                                             friend => {
-                                                console.log(friend);
-                                                console.log(req.body.id);
                                                 return (
                                                     friend.friend.toString() ===
                                                     req.body.id.toString()
