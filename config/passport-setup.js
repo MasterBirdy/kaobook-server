@@ -4,7 +4,6 @@ const FacebookStrategy = require("passport-facebook");
 const User = require("../models/User");
 
 passport.serializeUser((user, done) => {
-    console.log(user.id);
     done(null, user.id);
 });
 
@@ -33,7 +32,6 @@ passport.use(
         (accessToken, refreshToken, profile, done) => {
             User.findOne({ facebookId: profile.id }).then(currentUser => {
                 if (currentUser) {
-                    console.log("here is the current user: ", currentUser);
                     done(null, currentUser);
                 } else {
                     new User({
@@ -47,7 +45,6 @@ passport.use(
                     })
                         .save()
                         .then(newUser => {
-                            console.log("new user created: " + newUser);
                             done(null, newUser);
                         })
                         .catch(err => console.log(err));

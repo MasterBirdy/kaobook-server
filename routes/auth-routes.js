@@ -148,9 +148,9 @@ router.post("/login", [
     }
 ]);
 
-router.get("/logout", (req, res) => {
+router.get("/logout", (req, res, next) => {
     req.logout();
-    res.redirect("http://localhost:8080/");
+    return res.status(200);
 });
 
 module.exports = router;
