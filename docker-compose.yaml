@@ -40,7 +40,7 @@ volumes:
         driver: local
         driver_opts:
             type: none
-            device: /home/matthew/nodeSandbox/kaobook/public/
+            device: /kaobook-server/public
             o: bind
           
 networks:
