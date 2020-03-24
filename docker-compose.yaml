@@ -40,7 +40,7 @@ volumes:
         driver: local
         driver_opts:
             type: none
-            device: /kaobook-server/public
+            device: /root/kaobook-server/public
             o: bind
           
 networks:
